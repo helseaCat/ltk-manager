@@ -95,6 +95,9 @@ windows-sys = { version = "0.59", features = [
 assert_matches = "1.5"
 filetime = "0.2"
 
+[profile.dev]
+opt-level = 3
+
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
