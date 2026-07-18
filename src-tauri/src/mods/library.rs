@@ -99,7 +99,21 @@ impl ModLibrary {
                 .cloned()
                 .collect();
 
-            profile.mod_order = mod_ids;
+            profile.mod_order = mod_ids.clone();
+
+            // Sync folder mod_ids to match the new ordering so that
+            // flatten_folder_order (used by reconcile on next startup)
+            // produces the same sequence.
+            for folder in &mut index.folders {
+                let folder_set: std::collections::HashSet<&str> =
+                    folder.mod_ids.iter().map(|s| s.as_str()).collect();
+                let reordered: Vec<String> = mod_ids
+                    .iter()
+                    .filter(|id| folder_set.contains(id.as_str()))
+                    .cloned()
+                    .collect();
+                folder.mod_ids = reordered;
+            }
 
             Ok(())
         })
